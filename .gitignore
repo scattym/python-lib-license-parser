@@ -1,0 +1,9 @@
+dist
+license_parser.egg-info
+build
+*.pyc
+.cache
+nose2-junit.xml
+coverage.xml
+.coverage
+.idea

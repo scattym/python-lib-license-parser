@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='licenseparser',
-    version='1.1',
+    version='1.2.dev0',
     description='Library for working with the geotool rest interface',
     url='https://bitbucket.org/poslive/python-lib-license-parser.git',
     author='Matt Clark',

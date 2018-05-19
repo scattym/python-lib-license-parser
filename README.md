@@ -1,1 +1,1 @@
-# Library for managing callouts to the geotool api
+# Library for working with drivers license data

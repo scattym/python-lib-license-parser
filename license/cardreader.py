@@ -70,7 +70,7 @@ class License(object):
         self.track_1 = payload
         if '^' in payload:
             fields = payload.split('^')
-            logger.debug("Track 1 field length %s" % len(fields))
+            logger.log(13, "Track 1 field length %s" % len(fields))
             if len(fields) != 4:
                 logger.error("Unable to properly parse track 1: %s", payload)
 
@@ -106,7 +106,7 @@ class License(object):
         self.track_2 = payload
 
         fields = payload.split('=')
-        logger.debug("Track 2 field length %s" % len(fields))
+        logger.log(13, "Track 2 field length %s" % len(fields))
         if len(fields) != 3:
             logger.error("Unable to properly parse track 2: %s", payload)
         if len(fields) >= 1:
@@ -138,7 +138,7 @@ class License(object):
                 logger.info("Fell back to parsing name from track 3")
                 return
 
-        logger.debug("Track 3 field length %s" % len(fields))
+        logger.log(13, "Track 3 field length %s" % len(fields))
         if len(fields) != 6 and len(fields) != 5:
             logger.error("Unable to properly parse track 3: %s", payload)
 
@@ -171,11 +171,11 @@ class License(object):
             else:
                 data = payload
             tracks = data.split('?')
-            logger.debug("Track list is %s", tracks)
+            logger.log(13, "Track list is %s", tracks)
             for track in tracks:
-                logger.debug("Track is %s", track)
+                logger.log(13, "Track is %s", track)
                 if len(track) > 0:
-                    logger.debug("Track first byte is %s", track[0])
+                    logger.log(13, "Track first byte is %s", track[0])
                     if track[0] == '%':  # track 1
                         self.parse_track_1(track[1:])
                     if track[0] == ';':  # track 2
@@ -213,7 +213,7 @@ def parse_card_reader_data(data, line_delim='|'):
         payload = base64.b64decode(data["card_read"])
 
         license = License(payload)
-        logger.debug("Return license is: %s" % (license,))
+        logger.log(13, "Return license is: %s" % (license,))
         return license
     except Exception as err:
         if data.get("card_read"):

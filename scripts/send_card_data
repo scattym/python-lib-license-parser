@@ -1,0 +1,17 @@
+import serial
+from base64 import b64decode
+
+def open_rs232(speed=115200):
+    device = "rfc2217://10.1.1.6:9990"
+    try:
+        serial_port = serial.serial_for_url(device, int(speed), timeout=int(5))
+    except ValueError as err:
+        if err.message == "remote rejected value for option 'baud rate'":
+            serial_port = serial.serial_for_url(device, timeout=5)
+    return serial_port
+
+if __name__ == "__main__":
+    data = b64decode("***REMOVED***")
+    ser = open_rs232(9600)
+    ser.write(data)
+

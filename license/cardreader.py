@@ -47,6 +47,10 @@ class License(object):
         self.track_2 = None
         self.track_3 = None
         if payload:
+            try:
+                payload = payload.encode()
+            except AttributeError as _:
+                pass
             logger.debug("Parsing payload %s", payload)
             self.parse_card_read(payload)
 
@@ -62,8 +66,11 @@ class License(object):
 
     def get_field(self, name):
         if self.fields.get(name):
-            return self.fields.get(name)
-        return self.fields.get(name)
+            try:
+                return self.fields.get(name).decode()
+            except AttributeError as _:
+                return self.fields.get(name)
+        return None
 
     def parse_pan_unknown_license_unknown(self, payload):
         space_delimited = re.sub(b' +', b' ', payload)
@@ -217,9 +224,9 @@ class License(object):
         exp_date = self.get_field('expiration_date')
         if exp_date:
             if exp_date == b'9999':
-                return b'999912'
+                return '999912'
             else:
-                return b'20%s%s' % (exp_date[0:2].decode(), exp_date[2:4].decode())
+                return '20%s%s' % (exp_date[0:2], exp_date[2:4])
 
 
 def parse_card_reader_data(data, line_delim='|'):
@@ -284,111 +291,111 @@ if __name__ == '__main__':
     tests = [
         {
             'data': '***REMOVED***',
-            'name': b'***REMOVED***',
-            'id_number': b'***REMOVED***',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19741025',
-            'license_number': b'***REMOVED***',
-            'license_type': b'3100',
+            'name': '***REMOVED***',
+            'id_number': '***REMOVED***',
+            'expiration_date': '9999',
+            'date_of_birth': '19741025',
+            'license_number': '***REMOVED***',
+            'license_type': '3100',
         },
         {
             'data': '***REMOVED***',
-            'name': b'***REMOVED***',
-            'id_number': b'***REMOVED***',
-            'expiration_date': b'2012',
-            'date_of_birth': b'19791215',
+            'name': '***REMOVED***',
+            'id_number': '***REMOVED***',
+            'expiration_date': '2012',
+            'date_of_birth': '19791215',
             'license_number': None,
         },
         {
             'data': '***REMOVED***',  # Matt C license
-            'name': b'***REMOVED***',
+            'name': '***REMOVED***',
             'id_number': None,
-            'expiration_date': b'2819',
-            'date_of_birth': b'4923',
+            'expiration_date': '2819',
+            'date_of_birth': '4923',
             'license_number': None,
         },
         {
             'data': '***REMOVED***',    # short read
             'name': None,
-            'id_number': b'***REMOVED***',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19740824',
+            'id_number': '***REMOVED***',
+            'expiration_date': '9999',
+            'date_of_birth': '19740824',
             'license_number': None,
         },
         {
             'data': '***REMOVED***',
-            'name': b'***REMOVED***',
-            'id_number': b'***REMOVED***',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19740824',
-            'license_number': b'***REMOVED***',
+            'name': '***REMOVED***',
+            'id_number': '***REMOVED***',
+            'expiration_date': '9999',
+            'date_of_birth': '19740824',
+            'license_number': '***REMOVED***',
             'license_type': None,
         },
         {
             'data': '***REMOVED***',  # short read
             'name': None,
-            'id_number': b'***REMOVED***',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19740824',
-            'license_number': b'***REMOVED***',
+            'id_number': '***REMOVED***',
+            'expiration_date': '9999',
+            'date_of_birth': '19740824',
+            'license_number': '***REMOVED***',
             'license_type': None,
         },
         {
             'data': '***REMOVED***',
-            'name': b'***REMOVED***',
-            'id_number': b'***REMOVED***',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19690426',
+            'name': '***REMOVED***',
+            'id_number': '***REMOVED***',
+            'expiration_date': '9999',
+            'date_of_birth': '19690426',
             'license_number': None,
-            'license_type': b'3100',
+            'license_type': '3100',
         },
         {
             'data': '***REMOVED***',
-            'name': b'***REMOVED***',
-            'id_number': b'***REMOVED***',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19740824',
-            'license_number': b'***REMOVED***',  # #### Bad that these are different
+            'name': '***REMOVED***',
+            'id_number': '***REMOVED***',
+            'expiration_date': '9999',
+            'date_of_birth': '19740824',
+            'license_number': '***REMOVED***',  # #### Bad that these are different
             'license_type': None,
         },
         {
             'data': '***REMOVED***',
-            'name': b'***REMOVED***',
-            'id_number': b'***REMOVED***',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19740824',
-            'license_number': b'***REMOVED***',  # #### Bad that these are different
+            'name': '***REMOVED***',
+            'id_number': '***REMOVED***',
+            'expiration_date': '9999',
+            'date_of_birth': '19740824',
+            'license_number': '***REMOVED***',  # #### Bad that these are different
             'license_type': None,
         },
         {
             'data': '***REMOVED***',
-            'name': b'***REMOVED***',
+            'name': '***REMOVED***',
             'id_number': None,
             'expiration_date': None,
             'date_of_birth': None,
-            'license_number': b'***REMOVED***',
+            'license_number': '***REMOVED***',
         },
         {
             'data': '***REMOVED***',
-            'name': b'***REMOVED***',
-            'id_number': b'***REMOVED***',
-            'expiration_date': b'2205',
-            'date_of_birth': b'19720501',
-            'license_number': b'***REMOVED***',
-            'license_type': b'2600',
+            'name': '***REMOVED***',
+            'id_number': '***REMOVED***',
+            'expiration_date': '2205',
+            'date_of_birth': '19720501',
+            'license_number': '***REMOVED***',
+            'license_type': '2600',
         },
         {
             'data': '***REMOVED***',
-            'name': b'***REMOVED***',
-            'id_number': b'***REMOVED***',
-            'expiration_date': b'1811',
-            'date_of_birth': b'19770916',
-            'license_number': b'***REMOVED***',
-            'license_type': b'1100',
+            'name': '***REMOVED***',
+            'id_number': '***REMOVED***',
+            'expiration_date': '1811',
+            'date_of_birth': '19770916',
+            'license_number': '***REMOVED***',
+            'license_type': '1100',
         },
         {
             'data': '***REMOVED***',
-            'name': b'***REMOVED***',
+            'name': '***REMOVED***',
             'id_number': None,
             'expiration_date': None,
             'date_of_birth': None,
@@ -396,36 +403,36 @@ if __name__ == '__main__':
         },
         {
             'data': '***REMOVED***',
-            'name': b'***REMOVED***',
-            'id_number': b'***REMOVED***',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19651210',
-            'license_number': b'***REMOVED***',
-            'license_type': b'3100',
+            'name': '***REMOVED***',
+            'id_number': '***REMOVED***',
+            'expiration_date': '9999',
+            'date_of_birth': '19651210',
+            'license_number': '***REMOVED***',
+            'license_type': '3100',
         },
         {
             'data': '***REMOVED***',
-            'name': b'***REMOVED***',
-            'id_number': b'***REMOVED***',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19690426',
+            'name': '***REMOVED***',
+            'id_number': '***REMOVED***',
+            'expiration_date': '9999',
+            'date_of_birth': '19690426',
             'license_number': None,
         },
         {
             'data': '***REMOVED***',
-            'name': b'SIHABORAN ANUCHIT MR',
-            'id_number': b'***REMOVED***',
-            'expiration_date': b'2010',
-            'date_of_birth': b'19861005',
-            'license_number': b'***REMOVED***',
-            'license_type': b'2400',
+            'name': 'SIHABORAN ANUCHIT MR',
+            'id_number': '***REMOVED***',
+            'expiration_date': '2010',
+            'date_of_birth': '19861005',
+            'license_number': '***REMOVED***',
+            'license_type': '2400',
         },
         {
             'data': '***REMOVED***',
             'name': None,
-            'id_number': b'***REMOVED***',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19740824',
+            'id_number': '***REMOVED***',
+            'expiration_date': '9999',
+            'date_of_birth': '19740824',
             'license_number': None,
         },
     ]

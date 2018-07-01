@@ -47,6 +47,10 @@ class License(object):
         self.track_2 = None
         self.track_3 = None
         if payload:
+            try:
+                payload = payload.encode()
+            except AttributeError as _:
+                pass
             logger.debug("Parsing payload %s", payload)
             self.parse_card_read(payload)
 
@@ -62,8 +66,11 @@ class License(object):
 
     def get_field(self, name):
         if self.fields.get(name):
-            return self.fields.get(name)
-        return self.fields.get(name)
+            try:
+                return self.fields.get(name).decode()
+            except AttributeError as _:
+                return self.fields.get(name)
+        return None
 
     def parse_pan_unknown_license_unknown(self, payload):
         space_delimited = re.sub(b' +', b' ', payload)
@@ -217,9 +224,9 @@ class License(object):
         exp_date = self.get_field('expiration_date')
         if exp_date:
             if exp_date == b'9999':
-                return b'999912'
+                return '999912'
             else:
-                return b'20%s%s' % (exp_date[0:2].decode(), exp_date[2:4].decode())
+                return '20%s%s' % (exp_date[0:2], exp_date[2:4])
 
 
 def parse_card_reader_data(data, line_delim='|'):
@@ -284,111 +291,111 @@ if __name__ == '__main__':
     tests = [
         {
             'data': 'AiUgIF5TQU5USVdPTkcgU1VWSU5BSSBNUi5eXj87NjAwNzY0MzEwMDQwMDQ2MTE1Nz05OTk5MTk3NDEwMjU9PysgICAgICAgICAgICAgMzEwMCAgICAgICAgICAgIDEgICAgICAgICAgICA1ODAwMzE2MyAgMDAxMDEgICAgICAgICAgICAgICAgICAgICA/DQM=',
-            'name': b'SANTIWONG SUVINAI MR.',
-            'id_number': b'3100400461157',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19741025',
-            'license_number': b'58003163',
-            'license_type': b'3100',
+            'name': 'SANTIWONG SUVINAI MR.',
+            'id_number': '3100400461157',
+            'expiration_date': '9999',
+            'date_of_birth': '19741025',
+            'license_number': '58003163',
+            'license_type': '3100',
         },
         {
             'data': 'AiUgVEFOVElNRVRIQU5PTiBSSU5SREVFIE1JU1MgPzs2MDA3NjQzMTEwMTAxOTQ0MDgzPTIwMTIxOTc5MTIxNT0/Kz8NAw==',
-            'name': b'TANTIMETHANON RINRDEE MISS',
-            'id_number': b'3110101944083',
-            'expiration_date': b'2012',
-            'date_of_birth': b'19791215',
+            'name': 'TANTIMETHANON RINRDEE MISS',
+            'id_number': '3110101944083',
+            'expiration_date': '2012',
+            'date_of_birth': '19791215',
             'license_number': None,
         },
         {
             'data': 'JTFeTUFUVEhFVyBDTEFSSyAgICAgICAgICAgICAgICAgXjExNzI1NzUxICBeODlGREVCQzM4RTRGOTNDRTAxNTY0NzlBQzJFRTE5Njg/Oz0yODE5NDkyMz0yMDQwNjU5MzAwPw0K',  # Matt C license
-            'name': b'MATTHEW CLARK',
+            'name': 'MATTHEW CLARK',
             'id_number': None,
-            'expiration_date': b'2819',
-            'date_of_birth': b'4923',
+            'expiration_date': '2819',
+            'date_of_birth': '4923',
             'license_number': None,
         },
         {
             'data': 'Ajs2MDA3NjQzMjUwOTAwMDAxODEyPTk5OTkxOTc0MDgyND0/DQM=',    # short read
             'name': None,
-            'id_number': b'3250900001812',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19740824',
+            'id_number': '3250900001812',
+            'expiration_date': '9999',
+            'date_of_birth': '19740824',
             'license_number': None,
         },
         {
             'data': 'AiUgICAgICAgICAgICAgMzMwMCAgICAgICAgICAgIDEgICAgICAgICAgICA1MjAwMTI3OCAgMDAxMDQgICAgICAgICAgICAgICAgICAgICA/OzYwMDc2NDMyNTA5MDAwMDE4MTI9OTk5OTE5NzQwODI0PT8rICBeVUVBS0FOJE1PTlRSSSRNUi5eXj8NAw==',
-            'name': b'UEAKAN$MONTRI$MR.',
-            'id_number': b'3250900001812',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19740824',
-            'license_number': b'52001278',
+            'name': 'UEAKAN$MONTRI$MR.',
+            'id_number': '3250900001812',
+            'expiration_date': '9999',
+            'date_of_birth': '19740824',
+            'license_number': '52001278',
             'license_type': None,
         },
         {
             'data': 'AiUgICAgICAgICAgICAgMzEwMCAgICAgICAgICAgIDEgICAgICAgICAgICA1MjAwMjY4MiAgMDAxMDQgICAgICAgICAgICAgICAgICAgICA/OzYwMDc2NDMyNTA5MDAwMDE4MTI9OTk5OTE5NzQwODI0PT8NAw==',  # short read
             'name': None,
-            'id_number': b'3250900001812',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19740824',
-            'license_number': b'52002682',
+            'id_number': '3250900001812',
+            'expiration_date': '9999',
+            'date_of_birth': '19740824',
+            'license_number': '52002682',
             'license_type': None,
         },
         {
             'data': 'AiUgIF5ZQU5BSkFSRUUkTklSVVQkTVIuXl4/OzYwMDc2NDMxMDA0OTAwMDAzNzU9OTk5OTE5NjkwNDI2PT8rPw0D',
-            'name': b'YANAJAREE$NIRUT$MR.',
-            'id_number': b'3100490000375',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19690426',
+            'name': 'YANAJAREE$NIRUT$MR.',
+            'id_number': '3100490000375',
+            'expiration_date': '9999',
+            'date_of_birth': '19690426',
             'license_number': None,
-            'license_type': b'3100',
+            'license_type': '3100',
         },
         {
             'data': 'AiUgICAgICAgICAgICAgMzEwMCAgICAgICAgICAgIDEgICAgICAgICAgICA1MjAwMjY4MiAgMDAxMDQgICAgICAgICAgICAgICAgICAgICA/OzYwMDc2NDMyNTA5MDAwMDE4MTI9OTk5OTE5NzQwODI0PT8rICBeVUVBS0FOJE1PTlRSSSRNUi5eXj8NAw==',
-            'name': b'UEAKAN$MONTRI$MR.',
-            'id_number': b'3250900001812',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19740824',
-            'license_number': b'52002682',  # #### Bad that these are different
+            'name': 'UEAKAN$MONTRI$MR.',
+            'id_number': '3250900001812',
+            'expiration_date': '9999',
+            'date_of_birth': '19740824',
+            'license_number': '52002682',  # #### Bad that these are different
             'license_type': None,
         },
         {
             'data': 'AiUgICAgICAgICAgICAgMzMwMCAgICAgICAgICAgIDEgICAgICAgICAgICA1MjAwMTI3OCAgMDAxMDQgICAgICAgICAgICAgICAgICAgICA/OzYwMDc2NDMyNTA5MDAwMDE4MTI9OTk5OTE5NzQwODI0PT8rICBeVUVBS0FOJE1PTlRSSSRNUi5eXj8NAw==',
-            'name': b'UEAKAN$MONTRI$MR.',
-            'id_number': b'3250900001812',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19740824',
-            'license_number': b'52001278',  # #### Bad that these are different
+            'name': 'UEAKAN$MONTRI$MR.',
+            'id_number': '3250900001812',
+            'expiration_date': '9999',
+            'date_of_birth': '19740824',
+            'license_number': '52001278',  # #### Bad that these are different
             'license_type': None,
         },
         {
             'data': 'AiUgIF5KVU5QVUVOR1NPT0skVEhPTkdDSEFJJE1SLl5ePysgICAgICAgICAgICAgMTEwMCAgICAgICAgICAgIDEgICAgICAgICAgICA1OTAwMjY3NCAgNjAzMDAgICAgICAgICAgICAgICAgICAgICA/DQM=',
-            'name': b'JUNPUENGSOOK$THONGCHAI$MR.',
+            'name': 'JUNPUENGSOOK$THONGCHAI$MR.',
             'id_number': None,
             'expiration_date': None,
             'date_of_birth': None,
-            'license_number': b'59002674',
+            'license_number': '59002674',
         },
         {
             'data': 'AiUgIF5QQVlPT00kVEVFUkFTQUskTVIuXl4/OzYwMDc2NDM4MDAzMDAyNzM0OTI9MjIwNTE5NzIwNTAxPT8rICAgICAgICAgICAgIDI2MDAgICAgICAgICAgICAxICAgICAgICAgICAgNTkwMDM5NzIgIDAwMTA0ICAgICAgICAgICAgICAgICAgICAgPw0D',
-            'name': b'PAYOOM$TEERASAK$MR.',
-            'id_number': b'3800300273492',
-            'expiration_date': b'2205',
-            'date_of_birth': b'19720501',
-            'license_number': b'59003972',
-            'license_type': b'2600',
+            'name': 'PAYOOM$TEERASAK$MR.',
+            'id_number': '3800300273492',
+            'expiration_date': '2205',
+            'date_of_birth': '19720501',
+            'license_number': '59003972',
+            'license_type': '2600',
         },
         {
             'data': 'AiUgIF5SQURST0dTQSRSVUVOR1lPUyRNUi5eXj87NjAwNzY0MzIxOTkwMDE4ODM5Mj0xODExMTk3NzA5MTY9PysgICAgICAgICAgICAgMTEwMCAgICAgICAgICAgIDEgICAgICAgICAgICA1OTAxMTU3MyAgMDAxMDMgICAgICAgICAgICAgICAgICAgICA/DQM=',
-            'name': b'RADROGSA$RUENGYOS$MR.',
-            'id_number': b'3219900188392',
-            'expiration_date': b'1811',
-            'date_of_birth': b'19770916',
-            'license_number': b'59011573',
-            'license_type': b'1100',
+            'name': 'RADROGSA$RUENGYOS$MR.',
+            'id_number': '3219900188392',
+            'expiration_date': '1811',
+            'date_of_birth': '19770916',
+            'license_number': '59011573',
+            'license_type': '1100',
         },
         {
             'data': 'AiUgIF5ZQU5BSkFSRUUkSEFUQUlUSVAkTUlTU15ePw0D',
-            'name': b'YANAJAREE$HATAITIP$MISS',
+            'name': 'YANAJAREE$HATAITIP$MISS',
             'id_number': None,
             'expiration_date': None,
             'date_of_birth': None,
@@ -396,36 +403,36 @@ if __name__ == '__main__':
         },
         {
             'data': 'AiUgIF5ZQU5BSkFSRUUkSEFUQUlUSVAkTUlTU15ePzs2MDA3NjQzMTAwNDAwNzYzMjM0PTk5OTkxOTY1MTIxMD0/KyAgICAgICAgICAgICAzMTAwICAgICAgICAgICAgMiAgICAgICAgICAgIDMzMDAwOTM2ICAwMDEwMyAgICAgICAgICAgICAgICAgICAgID8NAw==',
-            'name': b'YANAJAREE$HATAITIP$MISS',
-            'id_number': b'3100400763234',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19651210',
-            'license_number': b'33000936',
-            'license_type': b'3100',
+            'name': 'YANAJAREE$HATAITIP$MISS',
+            'id_number': '3100400763234',
+            'expiration_date': '9999',
+            'date_of_birth': '19651210',
+            'license_number': '33000936',
+            'license_type': '3100',
         },
         {
             'data': 'AiUgIF5ZQU5BSkFSRUUkTklSVVQkTVIuXl4/OzYwMDc2NDMxMDA0OTAwMDAzNzU9OTk5OTE5NjkwNDI2PT8rPw0D',
-            'name': b'YANAJAREE$NIRUT$MR.',
-            'id_number': b'3100490000375',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19690426',
+            'name': 'YANAJAREE$NIRUT$MR.',
+            'id_number': '3100490000375',
+            'expiration_date': '9999',
+            'date_of_birth': '19690426',
             'license_number': None,
         },
         {
             'data': 'AiUgU0lIQUJPUkFOIEFOVUNISVQgTVIgPzs2MDA3NjQxNDU5OTAwMDc1OTQ4PTIwMTAxOTg2MTAwNT0/KyAgICAgICAgICAgICAyNDAwICAgICAgICAgICAgMSAgICAgICAgICAgIDU4MDExNDIwICAwMDEwMCAgICAgICAgICAgICAgICAgICAgID8NAw==',
-            'name': b'SIHABORAN ANUCHIT MR',
-            'id_number': b'1459900075948',
-            'expiration_date': b'2010',
-            'date_of_birth': b'19861005',
-            'license_number': b'58011420',
-            'license_type': b'2400',
+            'name': 'SIHABORAN ANUCHIT MR',
+            'id_number': '1459900075948',
+            'expiration_date': '2010',
+            'date_of_birth': '19861005',
+            'license_number': '58011420',
+            'license_type': '2400',
         },
         {
             'data': 'Ajs2MDA3NjQzMjUwOTAwMDAxODEyPTk5OTkxOTc0MDgyND0/DQM=',
             'name': None,
-            'id_number': b'3250900001812',
-            'expiration_date': b'9999',
-            'date_of_birth': b'19740824',
+            'id_number': '3250900001812',
+            'expiration_date': '9999',
+            'date_of_birth': '19740824',
             'license_number': None,
         },
     ]

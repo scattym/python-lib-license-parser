@@ -13,5 +13,7 @@ def open_rs232(speed=115200):
 if __name__ == "__main__":
     data = b64decode("AiUgIF5TQU5USVdPTkcgU1VWSU5BSSBNUi5eXj87NjAwNzY0MzEwMDQwMDQ2MTE1Nz05OTk5MTk3NDEwMjU9PysgICAgICAgICAgICAgMzEwMCAgICAgICAgICAgIDEgICAgICAgICAgICA1ODAwMzE2MyAgMDAxMDEgICAgICAgICAgICAgICAgICAgICA/DQM=")
     ser = open_rs232(9600)
+    while True:
+        print(ser.read())
     ser.write(data)
 

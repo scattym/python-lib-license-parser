@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='licenseparser',
-    version='1.2',
+    version='1.3.dev0',
     description='Library for working with drivers license data',
     url='https://bitbucket.org/poslive/python-lib-license-parser.git',
     author='Matt Clark',

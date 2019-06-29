@@ -13,5 +13,8 @@ setup(
     ],
     dependency_links=[
     ],
+    scripts=[
+        'scripts/send_card_data'
+    ],
     zip_safe=True
 )

@@ -223,7 +223,7 @@ class License(object):
     def get_expiration_date(self):
         exp_date = self.get_field('expiration_date')
         if exp_date:
-            if exp_date == b'9999':
+            if exp_date in [b'9999', '9999']:
                 return '999912'
             else:
                 return '20%s%s' % (exp_date[0:2], exp_date[2:4])
@@ -470,9 +470,11 @@ if __name__ == '__main__':
         print()
         test_number = test_number + 1
 
-    test_card_read = b"***REMOVED***"
+    test_card_read = b"""***REMOVED***"""
+    test_card_read = b"""***REMOVED***"""
     test_card_license = License(test_card_read)
     print(test_card_license)
+    print(test_card_license.get_expiration_date())
             # print(test_license.get_field('name'))
             # print(test_license.get_field('license_number'))
             # print(test_license.get_field('pan'))

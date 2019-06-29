@@ -6,6 +6,7 @@ include CHANGELOG
 recursive-include geotool_api *.py
 recursive-include tests *.json
 recursive-include tests *.py
+recursive-include scripts *
 exclude .project
 exclude .pydevproject
 exclude .idea
